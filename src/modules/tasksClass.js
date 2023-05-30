@@ -32,20 +32,26 @@ export default class Tasks {
 
     checkboxes = document.querySelectorAll('input[type=checkbox]');
     checkboxes.forEach((checkbox, i) => {
+      const updateCheckboxState = () => {
+        const isChecked = checkbox.checked;
+        const nextSibling = checkbox.nextElementSibling.nextElementSibling;
+
+        if (isChecked) {
+          nextSibling.classList.add('marked');
+        } else {
+          nextSibling.classList.remove('marked');
+        }
+
+        temp[i].completed = isChecked;
+        this.setLocalStorage(temp);
+      };
+
       if (temp[i].completed === true) {
         checkbox.checked = true;
-        checkbox.nextSibling.nextSibling.classList.add('marked');
+        checkbox.nextElementSibling.nextElementSibling.classList.add('marked');
       }
-      checkbox.addEventListener('change', () => {
-        if (checkbox.checked === true) {
-          checkbox.nextSibling.nextSibling.classList.add('marked');
-          temp[i].completed = true;
-        } else {
-          checkbox.nextSibling.nextSibling.classList.remove('marked');
-          temp[i].completed = false;
-        }
-        this.setLocalStorage(temp);
-      });
+
+      checkbox.addEventListener('change', updateCheckboxState);
     });
 
     descriptions = document.querySelectorAll('.task-description');
